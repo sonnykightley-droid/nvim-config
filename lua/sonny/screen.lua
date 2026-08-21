@@ -9,7 +9,7 @@ math.randomseed(os.time()) -- For random header.
 -- And automatically center it for screen loader of the header.
 local function split(s)
 	local t = {}
-	local max_line_length = vim.api.nvim_get_option("columns")
+	local max_line_length = vim.o.columns
 	local longest = 0 -- Value of longest string is 0 by default
 	for far in s:gmatch("[^\r\n]+") do
 		-- Break the line if it's actually bigger than terminal columns
@@ -277,7 +277,7 @@ local ol = { -- occupied lines
 
 local left_terminal_value = math.max(
 	0,
-	vim.api.nvim_get_option("lines") - (ol.length_buttons + ol.message + ol.padding_between + ol.icon + ol.neovim_lines)
+	vim.o.lines - (ol.length_buttons + ol.message + ol.padding_between + ol.icon + ol.neovim_lines)
 )
 local top_padding = math.floor(left_terminal_value / 2)
 local bottom_padding = left_terminal_value - top_padding
