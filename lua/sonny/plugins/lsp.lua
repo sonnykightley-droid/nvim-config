@@ -5,16 +5,19 @@ local function on_attach(args)
 	vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
 	vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
 	vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
-	vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
-	vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
 	vim.keymap.set("n", "<leader>d", vim.diagnostic.open_float, opts) -- full message in a popup
+
+	local client = vim.lsp.get_client_by_id(args.data.client_id)
+	if client and client:supports_method("textDocument/inlayHint") then
+		vim.lsp.inlay_hint.enable(true, { bufnr = args.buf })
+	end
 end
 
 return {
 	{
 		"mason-org/mason.nvim",
 		opts = {
-			ensure_installed = { "debugpy", "codelldb" },
+			ensure_installed = { "debugpy", "codelldb", "prettierd" },
 		},
 	},
 	{
@@ -24,7 +27,7 @@ return {
 			"neovim/nvim-lspconfig",
 		},
 		opts = {
-			ensure_installed = { "lua_ls", "pyright", "rust_analyzer" },
+			ensure_installed = { "lua_ls", "pyright", "rust_analyzer", "vtsls", "eslint" },
 		},
 		config = function(_, opts)
 			vim.api.nvim_create_autocmd("LspAttach", { callback = on_attach })
@@ -57,6 +60,43 @@ return {
 					},
 				},
 			})
+
+			vim.lsp.config("vtsls", {
+				settings = {
+					typescript = {
+						updateImportsOnFileMove = { enabled = "always" },
+						suggest = { completeFunctionCalls = true },
+						inlayHints = {
+							parameterNames = { enabled = "literals" },
+							parameterTypes = { enabled = true },
+							variableTypes = { enabled = false },
+							propertyDeclarationTypes = { enabled = true },
+							functionLikeReturnTypes = { enabled = true },
+							enumMemberValues = { enabled = true },
+						},
+					},
+					javascript = {
+						updateImportsOnFileMove = { enabled = "always" },
+						suggest = { completeFunctionCalls = true },
+						inlayHints = {
+							parameterNames = { enabled = "literals" },
+							parameterTypes = { enabled = true },
+							variableTypes = { enabled = false },
+							propertyDeclarationTypes = { enabled = true },
+							functionLikeReturnTypes = { enabled = true },
+							enumMemberValues = { enabled = true },
+						},
+					},
+					vtsls = {
+						autoUseWorkspaceTsdk = true,
+						experimental = {
+							completion = { enableServerSideFuzzyMatch = true },
+						},
+					},
+				},
+			})
+
+			vim.lsp.config("eslint", {})
 
 			require("mason-lspconfig").setup(opts)
 		end,
