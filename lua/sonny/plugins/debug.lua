@@ -14,28 +14,8 @@ return {
 		require("nvim-dap-virtual-text").setup()
 		require("dap-python").setup()
 
-		-- Rust has to be done via codelldb
-		dap.adapters.codelldb = {
-			type = "server",
-			port = "${port}",
-			executable = {
-				command = vim.fn.stdpath("data") .. "/mason/bin/codelldb",
-				args = { "--port", "${port}" },
-			},
-		}
-
-		dap.configurations.rust = {
-			{
-				name = "Launch",
-				type = "codelldb",
-				request = "launch",
-				program = function()
-					return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/target/debug/", "file")
-				end,
-				cwd = "${workspaceFolder}",
-				stopOnEntry = false,
-			},
-		}
+		-- Rust debugging (codelldb adapter + configurations) is registered by
+		-- rustaceanvim itself once its LSP client attaches; see rustaceanvim.lua.
 
 		vim.fn.sign_define("DapBreakpoint", { text = "●", texthl = "DiagnosticError", linehl = "", numhl = "" })
 		vim.fn.sign_define(

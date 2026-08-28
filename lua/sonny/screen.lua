@@ -245,11 +245,11 @@ local buttons = {
 	type = "group",
 	val = {
 		button("e", "  New Buffer", ":tabnew<CR>"),
-		button("f", "  Find file", ":Telescope find_files<CR>"),
-		button("h", "  Recently opened files", ":Telescope oldfiles<CR>"),
+		button("f", "  Find file", ":Telescope find_files<CR>"),
+		button("h", "  Recently opened files", ":Telescope oldfiles<CR>"),
 		button("r", "  Frecency/MRU", ":Telescope oldfiles<CR>"),
 		-- button("g", "  Open Last Session", ":source ~/.config/nvim/session.vim<CR>"),
-		button("m", "  Word Finder", ":Telescope live_grep<CR>"),
+		button("m", "  Word Finder", ":Telescope live_grep<CR>"),
 		button("l", "  Marks", ":Telescope marks<CR>"),
 	},
 	opts = {

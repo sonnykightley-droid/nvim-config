@@ -2,3 +2,4 @@
 lazy-lock.json
 *.swp
 *.tmp
+.claude/*
