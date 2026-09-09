@@ -1,6 +1,11 @@
 return {
 	"mrcjkb/rustaceanvim",
-	version = "^9",
+	-- v9.0.0 dropped Neovim 0.11 support without a corresponding major bump
+	-- (github.com/mrcjkb/rustaceanvim commit 08ad08c, "feat!: drop Neovim
+	-- 0.11 support" - included in every 9.x release), so `^9` silently
+	-- resolves to a version that refuses to load on 0.11.6. v8.x is the
+	-- newest line that still supports it.
+	version = "^8",
 	lazy = false,
 	ft = "rust",
 	dependencies = { "mfussenegger/nvim-dap" },

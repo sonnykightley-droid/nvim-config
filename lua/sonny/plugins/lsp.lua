@@ -44,7 +44,7 @@ return {
 			"neovim/nvim-lspconfig",
 		},
 		opts = {
-			ensure_installed = { "lua_ls", "pyright", "vtsls", "eslint" },
+			ensure_installed = { "lua_ls", "pyright", "ruff", "vtsls", "eslint" },
 			automatic_enable = {
 				-- vtsls replaces ts_ls, and rustaceanvim manages rust_analyzer
 				-- itself; running either alongside its plain lspconfig
@@ -81,15 +81,44 @@ return {
 			})
 
 			vim.lsp.config("pyright", {
+				cmd = { mason_bin("pyright-langserver"), "--stdio" },
+				-- pyright doesn't auto-detect a project's ./.venv, and its
+				-- venvPath/venv settings silently don't resolve it either -
+				-- only a direct pythonPath does. That has to be per-project, so
+				-- it's discovered here instead of hardcoded (works for uv,
+				-- poetry --local, or a plain `python -m venv .venv`).
+				on_init = function(client)
+					if not client.config.root_dir then
+						return
+					end
+					local venv_python = client.config.root_dir .. "/.venv/bin/python"
+					if vim.uv.fs_stat(venv_python) then
+						client.settings = vim.tbl_deep_extend("force", client.settings or {}, {
+							python = { pythonPath = venv_python },
+						})
+						client:notify("workspace/didChangeConfiguration", { settings = client.settings })
+					end
+				end,
 				settings = {
 					python = {
 						analysis = {
 							typeCheckingMode = "basic",
 							autoSearchPaths = true,
 							useLibraryCodeForTypes = true,
+							autoImportCompletions = true,
+							diagnosticMode = "workspace",
 						},
 					},
 				},
+			})
+
+			-- ruff handles linting, fixes and import sorting (see formatting.lua);
+			-- pyright's hover is more useful than ruff's rule-doc hover, so let
+			-- pyright win that one.
+			vim.lsp.config("ruff", {
+				on_attach = function(client)
+					client.server_capabilities.hoverProvider = false
+				end,
 			})
 
 			vim.lsp.config("vtsls", {

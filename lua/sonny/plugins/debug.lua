@@ -17,6 +17,19 @@ return {
 		-- Rust debugging (codelldb adapter + configurations) is registered by
 		-- rustaceanvim itself once its LSP client attaches; see rustaceanvim.lua.
 
+		vim.api.nvim_create_autocmd("FileType", {
+			pattern = "python",
+			callback = function(args)
+				local py_opts = { buffer = args.buf }
+				vim.keymap.set("n", "<leader>pt", function()
+					require("dap-python").test_method()
+				end, py_opts)
+				vim.keymap.set("n", "<leader>pc", function()
+					require("dap-python").test_class()
+				end, py_opts)
+			end,
+		})
+
 		vim.fn.sign_define("DapBreakpoint", { text = "●", texthl = "DiagnosticError", linehl = "", numhl = "" })
 		vim.fn.sign_define(
 			"DapBreakpointCondition",

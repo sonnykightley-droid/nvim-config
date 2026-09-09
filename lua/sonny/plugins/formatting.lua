@@ -14,7 +14,7 @@ return {
     },
     opts = {
         formatters_by_ft = {
-            python = { "isort", "black" },
+            python = { "ruff_organize_imports", "ruff_format" },
             rust = { "rustfmt" },
             lua = { "stylua" },
             javascript = { "prettierd", "prettier", stop_after_first = true },
