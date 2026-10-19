@@ -21,6 +21,8 @@ return {
                 "json5",
                 "xml",
                 "razor",
+                "markdown",
+                "markdown_inline",
             },
             auto_install = true,
             highlight = {
