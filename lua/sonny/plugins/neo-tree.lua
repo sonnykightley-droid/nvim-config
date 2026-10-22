@@ -34,9 +34,7 @@ return {
                 {
                     event = "file_opened",
                     handler = function(file_path)
-                        if vim.o.columns < 150 then -- check for splitscreen
-                            require("neo-tree.command").execute({ action = "close" })
-                        end
+                        require("neo-tree.command").execute({ action = "close" })
                     end,
                 },
                 { -- update file inmports on rename

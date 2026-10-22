@@ -11,10 +11,26 @@ return {
 	dependencies = { "mfussenegger/nvim-dap" },
 	init = function()
 		vim.g.rustaceanvim = function()
-			local mason_registry = require("mason-registry")
-			local codelldb = mason_registry.get_package("codelldb")
-			local codelldb_path = codelldb:get_install_path() .. "/extension/adapter/codelldb"
-			local liblldb_path = codelldb:get_install_path() .. "/extension/lldb/lib/liblldb.so"
+			-- Point at mason's real codelldb binaries rather than its `bin/`
+			-- shim: on Windows that shim is a `codelldb.cmd` wrapper, which
+			-- puts a cmd.exe between nvim-dap and the adapter. The layout
+			-- differs per OS (checked against the v1.12.3 .vsix packages).
+			-- `$MASON/packages/...` rather than `Package:get_install_path()`,
+			-- which mason v2 lists as removed.
+			local extension = vim.fs.joinpath(vim.fn.expand("$MASON"), "packages", "codelldb", "extension")
+			local codelldb_path, liblldb_path
+			if vim.fn.has("win32") == 1 then
+				codelldb_path = vim.fs.joinpath(extension, "adapter", "codelldb.exe")
+				liblldb_path = vim.fs.joinpath(extension, "lldb", "bin", "liblldb.dll")
+			else
+				codelldb_path = vim.fs.joinpath(extension, "adapter", "codelldb")
+				liblldb_path = vim.fs.joinpath(
+					extension,
+					"lldb",
+					"lib",
+					vim.fn.has("mac") == 1 and "liblldb.dylib" or "liblldb.so"
+				)
+			end
 
 			return {
 				server = {

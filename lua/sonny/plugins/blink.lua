@@ -12,11 +12,11 @@ return {
 				-- blink's docs-window highlighter hits a real upstream bug on
 				-- them (saghen/blink.cmp#2474: treesitter.lua:196 "attempt to
 				-- call method 'range' (a nil value)"). The fix there is
-				-- updating nvim-treesitter to its `main` branch, which needs
-				-- Neovim 0.12+ - not available on 0.11. Disabling just the
-				-- docs window's syntax highlighting avoids it; docs still
-				-- show, just as plain text.
-				treesitter_highlighting = false,
+				-- nvim-treesitter's `main` branch, which treesitter.lua only
+				-- uses on Neovim 0.12+. On 0.11 (still on `master`), disabling
+				-- just the docs window's syntax highlighting avoids it; docs
+				-- still show, just as plain text.
+				treesitter_highlighting = vim.fn.has("nvim-0.12") == 1,
 			},
 			accept = {
 				auto_brackets = {

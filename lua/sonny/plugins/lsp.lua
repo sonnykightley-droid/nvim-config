@@ -35,8 +35,9 @@ return {
         opts = {
             -- mason.nvim's own `ensure_installed` opt does nothing (no code in
             -- mason.nvim handles it) - this plugin is what actually installs
-            -- non-LSP tools on startup.
-            ensure_installed = { "debugpy", "codelldb", "prettierd", "rust-analyzer" },
+            -- non-LSP tools on startup. tree-sitter-cli is what nvim-treesitter's
+            -- `main` branch builds parsers with (see treesitter.lua).
+            ensure_installed = { "debugpy", "codelldb", "prettierd", "rust-analyzer", "tree-sitter-cli" },
             run_on_start = true,
         },
     },
@@ -47,7 +48,7 @@ return {
             "neovim/nvim-lspconfig",
         },
         opts = {
-            ensure_installed = { "lua_ls", "pyright", "ruff", "vtsls", "eslint" },
+            ensure_installed = { "lua_ls", "pyright", "ruff", "vtsls", "eslint", "html" },
             automatic_enable = {
                 -- vtsls replaces ts_ls, and rustaceanvim manages rust_analyzer
                 -- itself; running either alongside its plain lspconfig
